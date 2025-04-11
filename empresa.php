@@ -107,19 +107,7 @@ class empresa{
     
         # Metodo retornarVentasXCliente($tipo,$numDoc)
         public function retornarVentasXCliente($tipo, $numDoc) {
-            $ventas = $this->getColeccionVentasInstancia(); // Trae todas las ventas
-            $ventasDelCliente = []; // Acá vamos a guardar las ventas que coincidan
-        
-            foreach ($ventas as $unaVenta) {
-                $cliente = $unaVenta->getObjClienteVenta(); // Obtenemos el cliente de la venta
-        
-                if ($cliente->getTipoDocClienteInstancia() == $tipo && 
-                    $cliente->getNumDocClienteInstancia() == $numDoc) {
-                    $ventasDelCliente[] = $unaVenta; // Si coincide, la guardamos
-                }
-            }
-        
-            return $ventasDelCliente;
+            
         }
         
 }    
