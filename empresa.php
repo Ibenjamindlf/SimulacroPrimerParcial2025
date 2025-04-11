@@ -99,39 +99,47 @@ class empresa{
         $importeFinal = 0;
         // $retorno = false;
         $motosParaVenta = [];
-    
+        $col_moto = array();
+        $obj_Venta = null;
         // Verificamos que el cliente esté habilitado para comprar
-        if ($objCliente->getEstadoClienteInstancia()) {
-    
+        if ($objCliente->getEstadoClienteInstancia()) {           
             // Recorremos cada código de moto enviado
             foreach ($colCodigosMoto as $codigo) {
-    
-                // Buscamos la moto en la colección de la empresa
-                foreach ($this->coleccionMotosInstancia as $moto) {
-    
-                    if ($moto->getCodigoInstancia() === $codigo && $moto->getActivaInstancia()) {
-    
-                        // Agregamos la moto al array de venta
-                        $motosParaVenta[] = $moto;
-    
-                        // Sumamos su precio
-                        $importeFinal += $moto->darPrecioVenta(); // corregí a 'darPrecioVenta' por legibilidad
-                        break; // una vez encontrada la moto, no hace falta seguir buscando
-                    }
-                }
+                // obtengo el obj moto correspondiente al codigo
+                $obj_moto = $this->retornarMoto($codigo);
+                if($obj_moto != null &&  $obj_moto->getActivaInstancia()){
+                    $col_moto = array_push($col_moto,$obj_moto);
+                }          
             }
-    
-            // Guardamos las motos asociadas a la venta
-            $this->setColeccionVentasInstancia($motosParaVenta);
-        }
-    
+            if count ($col_moto>0) { // tengo motos para vender
+                  $cat_venta = count($this->getColeccionVentasInstancia());
+                  $obj_Venta = neW Venta($cat_venta+1,date(),$objCliente);
+                  foreach ($col_moto as $unaMoto) {
+                               $obj_Venta->incorporarMoto($unaMoto);
+                  }
+                  $importeFinal = $obj_Venta->getPrecioFinalInstancia();
+             }
         return $importeFinal;
-    }
+        }
+            
+    
+   
     
     
         # Metodo retornarVentasXCliente($tipo,$numDoc)
         public function retornarVentasXCliente($tipo, $numDoc) {
-            
+            $col_ventaCliente = array();
+             $col_venta = $this->getColeccionVentasInstancia();
+            foreach ($col_venta as $obj_Venta) {
+                    $obj_cliente = $obj_Venta->getRefClienteInstancia();
+                    if($obj_cliente->getTipoDocClienteInstancia()==$tipo
+                          &&  $obj_cliente->getNroDocClienteInstancia()==$numDoc){
+                         $col_ventaCliente= array_push($col_ventaCliente,$obj_Venta);
+                        
+                     }
+                     
+            }
+            return $col_ventaCliente;
         }
         
 }    
