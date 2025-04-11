@@ -96,14 +96,38 @@ class empresa{
     }
     # Metodo registrarVenta($colCodigosMoto, $objCliente) 
     public function registrarVenta($colCodigosMoto, $objCliente) {
-        $estadoCliente = $objCliente->getEstadoClienteInstancia();
-        $retorno = false;
-        if ($estadoCliente) {
-            
-        } else {
-            # code...
+        $importeFinal = 0;
+        // $retorno = false;
+        $motosParaVenta = [];
+    
+        // Verificamos que el cliente esté habilitado para comprar
+        if ($objCliente->getEstadoClienteInstancia()) {
+    
+            // Recorremos cada código de moto enviado
+            foreach ($colCodigosMoto as $codigo) {
+    
+                // Buscamos la moto en la colección de la empresa
+                foreach ($this->coleccionMotosInstancia as $moto) {
+    
+                    if ($moto->getCodigoInstancia() === $codigo && $moto->getActivaInstancia()) {
+    
+                        // Agregamos la moto al array de venta
+                        $motosParaVenta[] = $moto;
+    
+                        // Sumamos su precio
+                        $importeFinal += $moto->darPrecioVenta(); // corregí a 'darPrecioVenta' por legibilidad
+                        break; // una vez encontrada la moto, no hace falta seguir buscando
+                    }
+                }
+            }
+    
+            // Guardamos las motos asociadas a la venta
+            $this->setColeccionVentasInstancia($motosParaVenta);
         }
-    return $retorno;}
+    
+        return $importeFinal;
+    }
+    
     
         # Metodo retornarVentasXCliente($tipo,$numDoc)
         public function retornarVentasXCliente($tipo, $numDoc) {
